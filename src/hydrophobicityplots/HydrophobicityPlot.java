@@ -334,11 +334,9 @@ public class HydrophobicityPlot extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
     
-    boolean flag = false;
     PlotGraph a;
     private void generatePlotMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_generatePlotMouseClicked
         // TODO add your handling code here:
-        flag = false;
         ArrayList<ArrayList> plots = new ArrayList();
         ArrayList<ArrayList> pos = new ArrayList();
         ArrayList<String> inputs = new ArrayList();
@@ -351,12 +349,7 @@ public class HydrophobicityPlot extends javax.swing.JFrame {
         else{
             try{
                 inputs = getInputs();
-            } catch(Exception e){
-                JOptionPane.showMessageDialog(this, 
-                "Check input. Invalid fasta format", "Error Message", JOptionPane.ERROR_MESSAGE);
-            }
-            if(flag == false){
-                System.out.println(protein_names.toString());
+                //System.out.println(protein_names.toString());
                 for(int i=0; i<inputs.size(); i++){
                     String input = inputs.get(i);
                     ArrayList tmp_pos = new ArrayList();
@@ -378,12 +371,12 @@ public class HydrophobicityPlot extends javax.swing.JFrame {
                 //test this
                 a = new PlotGraph(plots,pos,hydro_threshold.getValue()/10.0,window, protein_names);
                 getSegments.setEnabled(true);
-            }
-            else{
+            } catch(Exception e){
+                //System.out.println(inputs.size() + " sizeeee");
+                
                 JOptionPane.showMessageDialog(this, 
                 "Check input. Invalid fasta format", "Error Message", JOptionPane.ERROR_MESSAGE);
-            }
-            
+            }   
         }
         
     }//GEN-LAST:event_generatePlotMouseClicked
@@ -399,7 +392,8 @@ public class HydrophobicityPlot extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.out.println(a.disp);
         try {
-            FileWriter f = new FileWriter("file.txt");
+            String filename = JOptionPane.showInputDialog("Save as: ");
+            FileWriter f = new FileWriter(filename + ".txt");
             f.write(a.disp);
             f.close();
         } catch (IOException ex) {
@@ -640,28 +634,39 @@ public class HydrophobicityPlot extends javax.swing.JFrame {
     }
     ArrayList<String> protein_names = new ArrayList();
     private ArrayList<String> getInputs() {
+        boolean hasError = false;
         protein_names = new ArrayList();
         ArrayList<String> inputs = new ArrayList();
         String tmp = "";
-        
+        String wrongSeq = "";
         for (String seq: input_field.getText().split("\r\n")) {
             if(seq.contains(">")){
+                
+                    hasError=false;
+                
                 protein_names.add((seq.split(" ")[0]));
                 if(!tmp.isEmpty()){
                     inputs.add(tmp);
                     tmp = "";
                 }
             }
-            else if(seq.equals(" ")){
-                flag = true;
-                
-                break;
+            else if(seq.matches(".*[a-zA-Z]+.*")) {
+                System.out.println("seq" + seq);
+                if(!hasError)
+                    tmp+=seq;
             }
             else {
-                tmp+=seq;
+                hasError = true;
+                wrongSeq += seq;
+                continue;
             }
+           
         }
         //add last input
+        if(!wrongSeq.isEmpty()){
+            JOptionPane.showMessageDialog(this, 
+            "Check input. Invalid fasta format in: \n" + wrongSeq, "Error Message", JOptionPane.ERROR_MESSAGE);
+        }
         inputs.add(tmp);
         return inputs;
     }
