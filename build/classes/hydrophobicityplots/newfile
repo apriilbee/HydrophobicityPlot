@@ -1,0 +1,11 @@
+ 
+ 
+        disp += name;
+        ArrayList<ArrayList<Point>> trends = getTrends(values, pos, threshold);
+        for(int i=0; i<trends.size();i++){
+            double[] x = getX(trends.get(i));
+            double[] y = getY(trends.get(i));
+            chart.addSeries("trend"+String.valueOf(i)+ " " + (startval.get(i)+1) + "-" + (endval.get(i)+1), x , y);
+            disp += "\t" + (startval.get(i)+1) + "-" + (endval.get(i)+1);
+        }
+        disp += "\n"
