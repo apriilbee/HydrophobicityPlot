@@ -204,7 +204,7 @@ public class PlotGraph extends javax.swing.JFrame {
             x_axis[i] = pos.get(i);
             y_axis[i] = values.get(i);
         }
-        double h = getMax(y_axis);
+        //double h = getMax(y_axis);
       
         
         chart = new XYChartBuilder().title(name).xAxisTitle("Position").yAxisTitle("Average Hydrophobiciy").build();

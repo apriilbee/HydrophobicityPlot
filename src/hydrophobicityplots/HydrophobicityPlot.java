@@ -1,6 +1,7 @@
 package hydrophobicityplots;
 
 
+import java.awt.List;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -289,9 +290,10 @@ public class HydrophobicityPlot extends javax.swing.JFrame {
         // TODO add your handling code here:
         input_field.setText("");
         getSegments.setEnabled(false);
+        importedFile=false;
     }//GEN-LAST:event_jButton3MouseClicked
 
-    
+    boolean importedFile = false;
     private void import_buttonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_import_buttonMouseClicked
         // TODO add your handling code here:
         JFileChooser fc = new JFileChooser();
@@ -313,7 +315,7 @@ public class HydrophobicityPlot extends javax.swing.JFrame {
                 
                 String dna_sequence = sb.toString();
                 input_field.setText(dna_sequence);
-                
+                importedFile = true;
             } catch (IOException ex) {
                 Logger.getLogger(HydrophobicityPlot.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -372,8 +374,7 @@ public class HydrophobicityPlot extends javax.swing.JFrame {
                 a = new PlotGraph(plots,pos,hydro_threshold.getValue()/10.0,window, protein_names);
                 getSegments.setEnabled(true);
             } catch(Exception e){
-                //System.out.println(inputs.size() + " sizeeee");
-                
+                System.out.println(inputs.size() + " sizeeee");
                 JOptionPane.showMessageDialog(this, 
                 "Check input. Invalid fasta format", "Error Message", JOptionPane.ERROR_MESSAGE);
             }   
@@ -639,7 +640,16 @@ public class HydrophobicityPlot extends javax.swing.JFrame {
         ArrayList<String> inputs = new ArrayList();
         String tmp = "";
         String wrongSeq = "";
-        for (String seq: input_field.getText().split("\r\n")) {
+        String[] inputz;
+        if(importedFile){
+           String[] inp = input_field.getText().split("\r\n");
+           inputz = inp;
+        }
+        else{
+           String[] inp = input_field.getText().split("\\n");
+           inputz = inp;
+        }
+        for (String seq: inputz) {
             if(seq.contains(">")){
                 
                     hasError=false;
